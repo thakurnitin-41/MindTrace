@@ -24,7 +24,6 @@ import { SettingsView } from './components/SettingsView';
 import { NotificationModal } from './components/NotificationModal';
 import { DispatchToast } from './components/DispatchToast';
 import { AuthModal } from './components/AuthModal';
-import { LiveVoiceModal } from './components/LiveVoiceModal';
 import { AdminPortal } from './components/admin/AdminPortal';
 import { Menu, X, ArrowLeft, Bell } from 'lucide-react';
 
@@ -42,8 +41,6 @@ const AppContent: React.FC = () => {
     isAuthModalOpen,
     authModalMode,
     closeAuthModal,
-    isLiveVoiceModalOpen,
-    closeLiveVoiceModal,
     newlyUnlockedBadge,
     dismissUnlockedBadgeToast
   } = useApp();
@@ -80,10 +77,6 @@ const AppContent: React.FC = () => {
           onClose={closeAuthModal}
           initialMode={authModalMode}
           onSuccess={() => {}}
-        />
-        <LiveVoiceModal
-          isOpen={isLiveVoiceModalOpen}
-          onClose={closeLiveVoiceModal}
         />
       </>
     );
@@ -223,10 +216,6 @@ const AppContent: React.FC = () => {
         onClose={closeAuthModal}
         initialMode={authModalMode}
         onSuccess={() => {}}
-      />
-      <LiveVoiceModal
-        isOpen={isLiveVoiceModalOpen}
-        onClose={closeLiveVoiceModal}
       />
       <AchievementToast
         badge={newlyUnlockedBadge}

@@ -12,7 +12,6 @@ import {
   UserPlus,
   ShieldCheck,
   UserCheck,
-  Mic,
   Award
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -30,7 +29,6 @@ export const TopHeader: React.FC = () => {
     openAuthModal,
     unreadNotificationsCount,
     setIsNotificationModalOpen,
-    openLiveVoiceModal,
     achievements
   } = useApp();
 
@@ -230,17 +228,6 @@ export const TopHeader: React.FC = () => {
           <Brain className="w-4 h-4 text-blue-600" />
           <span>Mastery: {activeStudent ? `${activeStudent.overallMastery}%` : '0%'}</span>
         </div>
-
-        {/* Gemini Live API Real-Time Voice Tutor */}
-        <button
-          type="button"
-          onClick={openLiveVoiceModal}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-all cursor-pointer group"
-          title="Start real-time voice conversation with Gemini Live AI Tutor"
-        >
-          <Mic className="w-3.5 h-3.5 text-purple-200 group-hover:scale-110 transition-transform animate-pulse" />
-          <span className="hidden lg:inline">Live Voice Tutor</span>
-        </button>
 
         {/* Dispatched Email & SMS Message Center Trigger */}
         <button

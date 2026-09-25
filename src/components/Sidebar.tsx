@@ -13,7 +13,6 @@ import {
   ChevronRight,
   BookOpen,
   User,
-  Mic,
   Users,
   Award,
   GraduationCap,
@@ -41,7 +40,6 @@ export const Sidebar: React.FC = () => {
     currentPage,
     setCurrentPage,
     activeStudent,
-    openLiveVoiceModal,
     achievements
   } = useApp();
 
@@ -172,28 +170,6 @@ export const Sidebar: React.FC = () => {
           </div>
         ))}
       </nav>
-
-      {/* Live Voice Tutor Button */}
-      <div className="px-3 pb-2 pt-1">
-        <button
-          type="button"
-          onClick={openLiveVoiceModal}
-          className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-gradient-to-r from-purple-900/60 to-indigo-900/60 hover:from-purple-800/80 hover:to-indigo-800/80 border border-purple-500/40 text-purple-200 transition-all text-xs font-semibold cursor-pointer group shadow-xs shadow-purple-950/50"
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="p-1 rounded-lg bg-purple-500/20 text-purple-300 group-hover:scale-110 transition-transform">
-              <Mic className="w-4 h-4 animate-pulse text-purple-300" />
-            </div>
-            <div className="text-left">
-              <div className="text-xs text-white font-bold leading-tight">Live Voice Tutor</div>
-              <div className="text-[10px] text-purple-300/80">Gemini 3.8 Live</div>
-            </div>
-          </div>
-          <span className="text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded bg-purple-500/30 text-purple-200 font-bold border border-purple-400/30">
-            Live
-          </span>
-        </button>
-      </div>
 
       {/* Student Profile Quick Card in Footer */}
       <div className="p-3 border-t border-slate-800/80 bg-slate-950/40">

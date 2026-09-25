@@ -122,11 +122,6 @@ interface AppContextType {
   auditLogs: AuditLogEntry[];
   addAuditLog: (entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) => void;
 
-  // Live Voice Modal Controls (Gemini Live)
-  isLiveVoiceModalOpen: boolean;
-  setIsLiveVoiceModalOpen: (open: boolean) => void;
-  openLiveVoiceModal: () => void;
-  closeLiveVoiceModal: () => void;
 
   // Global Auth Modal Controls
   isAuthModalOpen: boolean;
@@ -422,11 +417,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setPageHistory([]);
     setCurrentPageState('landing');
   };
-
-  // Live Voice Modal State (gemini-3.8-live)
-  const [isLiveVoiceModalOpen, setIsLiveVoiceModalOpen] = useState(false);
-  const openLiveVoiceModal = () => setIsLiveVoiceModalOpen(true);
-  const closeLiveVoiceModal = () => setIsLiveVoiceModalOpen(false);
 
   // Firebase Auth Loading State
   const [isFirebaseLoading, setIsFirebaseLoading] = useState(false);
@@ -2801,10 +2791,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         auditLogs,
         addAuditLog,
 
-        isLiveVoiceModalOpen,
-        setIsLiveVoiceModalOpen,
-        openLiveVoiceModal,
-        closeLiveVoiceModal,
         isAuthModalOpen,
         setIsAuthModalOpen,
         authModalMode,

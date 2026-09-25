@@ -3,8 +3,7 @@ import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
-import { WebSocketServer, WebSocket } from "ws";
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -28,8 +27,7 @@ async function startServer() {
     res.json({
       status: "ok",
       timestamp: new Date().toISOString(),
-      liveModel: process.env.GEMINI_LIVE_MODEL || "gemini-2.5-flash-native-audio-preview-12-2025",
-      voiceConfigured: Boolean(process.env.GEMINI_API_KEY)
+      textModel: process.env.GEMINI_TEXT_MODEL || "gemini-2.5-flash"
     });
   });
 
@@ -41,135 +39,6 @@ async function startServer() {
     }
     return new GoogleGenAI({ apiKey });
   };
-
-  // WebSocket Server for Gemini Live API real-time voice conversations
-  const wss = new WebSocketServer({ server, path: "/api/live-ws" });
-
-  wss.on("connection", async (clientWs: WebSocket) => {
-    console.log("[Live API] Client connected to voice stream");
-
-    let session: any = null;
-
-    try {
-      const ai = getAIClient();
-
-      session = await ai.live.connect({
-        model: process.env.GEMINI_LIVE_MODEL || "gemini-2.5-flash-native-audio-preview-12-2025",
-        config: {
-          responseModalities: [Modality.AUDIO],
-          speechConfig: {
-            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } },
-          },
-          systemInstruction:
-            "You are the MindTrace Voice AI Tutor. You help computer science students master Data Structures, Algorithms, and concept fundamentals through interactive Socratic dialogue. Help them identify the 'gap behind the gap' in their mental models. Keep your spoken responses concise, conversational, engaging, and clear.",
-        },
-        callbacks: {
-          onmessage: (message: LiveServerMessage) => {
-            try {
-              // Extract audio payload
-              const audio =
-                message.serverContent?.modelTurn?.parts?.[0]?.inlineData?.data;
-              if (audio && clientWs.readyState === WebSocket.OPEN) {
-                clientWs.send(JSON.stringify({ type: "audio", audio }));
-              }
-
-              // Extract text transcription if provided by the model turn
-              const textPart =
-                message.serverContent?.modelTurn?.parts?.[0]?.text;
-              if (textPart && clientWs.readyState === WebSocket.OPEN) {
-                clientWs.send(JSON.stringify({ type: "text", text: textPart }));
-              }
-
-              // Handle model interruption when student speaks over
-              if (message.serverContent?.interrupted && clientWs.readyState === WebSocket.OPEN) {
-                clientWs.send(JSON.stringify({ type: "interrupted", interrupted: true }));
-              }
-
-              // Turn complete marker
-              if (message.serverContent?.turnComplete && clientWs.readyState === WebSocket.OPEN) {
-                clientWs.send(JSON.stringify({ type: "turnComplete", turnComplete: true }));
-              }
-            } catch (err) {
-              console.error("[Live API] Error forwarding message to client:", err);
-            }
-          },
-          onclose: () => {
-            console.log("[Live API] Gemini session closed");
-            if (clientWs.readyState === WebSocket.OPEN) {
-              clientWs.send(JSON.stringify({ type: "status", status: "session_closed" }));
-            }
-          },
-          onerror: (err: any) => {
-            console.error("[Live API] Gemini session error:", err);
-            if (clientWs.readyState === WebSocket.OPEN) {
-              clientWs.send(
-                JSON.stringify({
-                  type: "error",
-                  error: err?.message || "Live API session encountered an error"
-                })
-              );
-            }
-          }
-        },
-      });
-
-      if (clientWs.readyState === WebSocket.OPEN) {
-        clientWs.send(
-          JSON.stringify({
-            type: "status",
-            status: "ready",
-            model: process.env.GEMINI_LIVE_MODEL || "gemini-2.5-flash-native-audio-preview-12-2025"
-          })
-        );
-      }
-    } catch (err: any) {
-      console.error("[Live API] Failed to connect to Gemini Live:", err);
-      if (clientWs.readyState === WebSocket.OPEN) {
-        clientWs.send(
-          JSON.stringify({
-            type: "error",
-            error:
-              err?.message ||
-              "Could not initialize Gemini Live. Verify GEMINI_API_KEY and GEMINI_LIVE_MODEL."
-          })
-        );
-      }
-      return;
-    }
-
-    clientWs.on("message", (data: any) => {
-      try {
-        const payload = JSON.parse(data.toString());
-        if (!session) return;
-
-        if (payload.type === "audio" && payload.audio) {
-          session.sendRealtimeInput({
-            audio: {
-              data: payload.audio,
-              mimeType: "audio/pcm;rate=16000",
-            },
-          });
-        } else if (payload.type === "text" && payload.text) {
-          session.sendRealtimeInput({
-            text: payload.text,
-          });
-        }
-      } catch (err) {
-        console.error("[Live API] Error processing client message:", err);
-      }
-    });
-
-    clientWs.on("close", () => {
-      console.log("[Live API] Client disconnected, closing session");
-      if (session) {
-        try {
-          session.close();
-        } catch (e) {
-          // ignore
-        }
-      }
-    });
-  });
 
   // Text-based Socratic AI Tutor fallback API route
   app.post("/api/tutor/chat", async (req, res) => {
