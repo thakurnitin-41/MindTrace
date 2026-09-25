@@ -17,7 +17,8 @@ import {
   Users,
   Award,
   GraduationCap,
-  Briefcase
+  Briefcase,
+  MessageSquare
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { PageId } from '../types';
@@ -52,6 +53,7 @@ export const Sidebar: React.FC = () => {
       items: [
         { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
         { id: 'my-learning', label: 'My Learning', icon: BookOpen },
+        { id: 'my-courses', label: 'My Courses', icon: BookOpen },
         { id: 'assessment', label: 'Assessments', icon: ClipboardCheck },
         { id: 'practice', label: 'Practice', icon: Zap },
       ]
@@ -64,6 +66,12 @@ export const Sidebar: React.FC = () => {
         { id: 'twin', label: 'Learning Insights', icon: Fingerprint },
         { id: 'autopsy', label: 'Assessment Results', icon: Activity, badge: 'AI Analysis', badgeColor: 'bg-purple-100 text-purple-700 border-purple-200' },
         { id: 'rescue', label: 'Rescue Mode', icon: Flame, badge: 'Intervention', badgeColor: 'bg-amber-100 text-amber-800 border-amber-200' }
+      ]
+    },
+    {
+      title: 'Communication',
+      items: [
+        { id: 'messages', label: 'Messages', icon: MessageSquare }
       ]
     },
     {

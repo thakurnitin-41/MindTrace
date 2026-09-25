@@ -5,6 +5,10 @@ import { TopHeader } from './components/TopHeader';
 import { LandingPage } from './components/LandingPage';
 import { StudentDashboard } from './components/StudentDashboard';
 import { MyLearningView } from './components/MyLearningView';
+import { MyCoursesView } from './components/MyCoursesView';
+import { CourseDetailView } from './components/CourseDetailView';
+import { ChapterLearningView } from './components/ChapterLearningView';
+import { MessagesView } from './components/MessagesView';
 import { DiagnosticAssessment } from './components/DiagnosticAssessment';
 import { LearningAutopsy } from './components/LearningAutopsy';
 import { KnowledgeGraphView } from './components/KnowledgeGraphView';
@@ -92,6 +96,14 @@ const AppContent: React.FC = () => {
         return <StudentDashboard />;
       case 'my-learning':
         return <MyLearningView />;
+      case 'my-courses':
+        return <MyCoursesView />;
+      case 'course-detail':
+        return <CourseDetailView />;
+      case 'chapter-learning':
+        return <ChapterLearningView />;
+      case 'messages':
+        return <MessagesView />;
       case 'assessment':
         return <DiagnosticAssessment />;
       case 'autopsy':

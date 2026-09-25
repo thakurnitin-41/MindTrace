@@ -16,6 +16,7 @@ import {
   ShieldAlert
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
+import { ContentIssueReporter } from './ContentIssueReporter';
 
 export const LearningAutopsy: React.FC = () => {
   const {
@@ -353,6 +354,7 @@ export const LearningAutopsy: React.FC = () => {
                         </button>
                       </div>
                     )}
+                    <ContentIssueReporter contentId={q.id} contentTitle={q.topicName} />
                   </div>
                 )}
               </div>

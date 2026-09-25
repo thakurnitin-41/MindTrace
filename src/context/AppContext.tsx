@@ -179,6 +179,10 @@ interface AppContextType {
   // Knowledge Graph State
   selectedGraphNodeId: string;
   setSelectedGraphNodeId: (id: string) => void;
+  selectedCourseId: string;
+  setSelectedCourseId: (id: string) => void;
+  selectedChapterId: string;
+  setSelectedChapterId: (id: string) => void;
 
   // Adaptive Practice State
   adaptivePractice: {
@@ -2117,6 +2121,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Knowledge Graph Selected Node
   const [selectedGraphNodeId, setSelectedGraphNodeId] = useState<string>('bst');
+  const [selectedCourseId, setSelectedCourseId] = useState<string>('data-structures-algorithms');
+  const [selectedChapterId, setSelectedChapterId] = useState<string>('binary-search-trees');
 
   // Adaptive Practice State
   const [adaptiveIndex, setAdaptiveIndex] = useState(0);
@@ -2816,6 +2822,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         rootGapDiagnosis,
         selectedGraphNodeId,
         setSelectedGraphNodeId,
+        selectedCourseId,
+        setSelectedCourseId,
+        selectedChapterId,
+        setSelectedChapterId,
         adaptivePractice: {
           questions: ADAPTIVE_PRACTICE_QUESTIONS,
           currentIndex: adaptiveIndex,

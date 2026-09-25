@@ -3,7 +3,7 @@ import { ArrowRight, BookOpen, CalendarCheck, CheckCircle2, Clock3, Target, Tren
 import { useApp } from '../context/AppContext';
 
 export const MyLearningView: React.FC = () => {
-  const { activeStudent, topics, setCurrentPage, setSelectedGraphNodeId } = useApp();
+  const { activeStudent, topics, setCurrentPage, setSelectedChapterId, setSelectedCourseId } = useApp();
   const currentCourse = activeStudent?.currentCourse || 'Data Structures & Algorithms';
   const currentChapter = activeStudent?.currentChapter || 'Binary Search Trees';
   const progress = activeStudent?.courseProgress ?? 63;
@@ -51,7 +51,7 @@ export const MyLearningView: React.FC = () => {
         </div>
         <div className="flex flex-col md:flex-row md:items-center gap-4">
           <div className="flex-1"><p className="text-sm text-slate-600">Current chapter: <strong className="text-slate-900">{currentChapter}</strong></p><div className="h-2 rounded-full bg-slate-100 mt-3"><div className="h-full rounded-full bg-blue-600" style={{ width: `${progress}%` }} /></div><p className="text-xs text-slate-500 mt-2">{progress}% complete</p></div>
-          <button onClick={() => { setSelectedGraphNodeId('binary_search'); setCurrentPage('knowledge-graph'); }} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold">Continue learning <ArrowRight className="w-4 h-4" /></button>
+          <button onClick={() => { setSelectedCourseId('data-structures-algorithms'); setSelectedChapterId('binary-search-trees'); setCurrentPage('chapter-learning'); }} className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold">Continue learning <ArrowRight className="w-4 h-4" /></button>
         </div>
       </section>
 

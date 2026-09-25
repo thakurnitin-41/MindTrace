@@ -46,6 +46,14 @@ export const TopHeader: React.FC = () => {
         return 'AI Learning Autopsy & Prerequisite Diagnosis';
       case 'knowledge-graph':
         return 'Interactive Knowledge Dependency Graph';
+      case 'my-learning':
+        return 'My Learning';
+      case 'my-courses':
+        return 'My Courses';
+      case 'course-detail':
+        return 'Course Detail';
+      case 'chapter-learning':
+        return 'Chapter Learning';
       case 'tutor':
         return 'Reasoning-First AI Tutor';
       case 'practice':
@@ -79,6 +87,14 @@ export const TopHeader: React.FC = () => {
         return 'Autopsy';
       case 'knowledge-graph':
         return 'Knowledge Graph';
+      case 'my-learning':
+        return 'My Learning';
+      case 'my-courses':
+        return 'My Courses';
+      case 'course-detail':
+        return 'Course Detail';
+      case 'chapter-learning':
+        return 'Chapter Learning';
       case 'tutor':
         return 'AI Tutor';
       case 'practice':
