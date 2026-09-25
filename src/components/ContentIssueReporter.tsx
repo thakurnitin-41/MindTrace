@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AlertCircle, CheckCircle2, Flag } from 'lucide-react';
+import { auth, createContentReport } from '../lib/firebase';
 
 export type ContentIssueType = 'Incorrect information' | 'Incorrect answer' | 'Typographical error' | 'Broken resource' | 'Question unclear' | 'Other';
 
@@ -13,14 +14,26 @@ export const ContentIssueReporter: React.FC<ContentIssueReporterProps> = ({ cont
   const [issueType, setIssueType] = useState<ContentIssueType>('Incorrect information');
   const [details, setDetails] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const submitReport = (event: React.FormEvent) => {
+  const submitReport = async (event: React.FormEvent) => {
     event.preventDefault();
-    const report = { id: `issue-${Date.now()}`, contentId, contentTitle, issueType, details: details.trim(), status: 'pending', createdAt: new Date().toISOString() };
-    const existing = JSON.parse(localStorage.getItem('mindtrace_content_reports') || '[]');
-    localStorage.setItem('mindtrace_content_reports', JSON.stringify([report, ...existing]));
-    setSubmitted(true);
-    setDetails('');
+    setError(null);
+    setIsSubmitting(true);
+    try {
+      if (!auth.currentUser) {
+        throw new Error('Authentication is required to submit a content report.');
+      }
+      await createContentReport({ contentId, contentTitle, issueType, details: details.trim(), reporterId: auth.currentUser.uid, reporterName: auth.currentUser.displayName || auth.currentUser.email || 'MindTrace learner', status: 'pending', createdAt: new Date().toISOString() });
+      setSubmitted(true);
+      setDetails('');
+    } catch (submitError) {
+      console.error('[ContentReport] Failed to submit report:', submitError);
+      setError('We could not submit this report. Please check your connection and try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isOpen) {
@@ -40,7 +53,8 @@ export const ContentIssueReporter: React.FC<ContentIssueReporterProps> = ({ cont
           <label className="block text-xs font-semibold text-slate-700">Issue type<select value={issueType} onChange={(event) => setIssueType(event.target.value as ContentIssueType)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal"><option>Incorrect information</option><option>Incorrect answer</option><option>Typographical error</option><option>Broken resource</option><option>Question unclear</option><option>Other</option></select></label>
           <label className="block text-xs font-semibold text-slate-700">Details (optional)<textarea value={details} onChange={(event) => setDetails(event.target.value)} rows={3} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal" placeholder="Tell us what should be reviewed." /></label>
           <div className="flex items-center gap-2 text-[11px] text-slate-500"><AlertCircle className="w-3.5 h-3.5" /> Faculty can accept, reject, edit, and notify you about reports.</div>
-          <button type="submit" className="px-3 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold">Submit report</button>
+          {error && <p className="text-xs font-semibold text-rose-700">{error}</p>}
+          <button type="submit" disabled={isSubmitting} className="px-3 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold disabled:opacity-50">{isSubmitting ? 'Submitting…' : 'Submit report'}</button>
         </form>
       )}
     </div>

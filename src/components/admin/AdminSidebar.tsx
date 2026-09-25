@@ -218,6 +218,7 @@ export const AdminSidebar: React.FC = () => {
                 badgeColor: 'bg-amber-100 text-amber-800'
               },
               { id: 'admin-settings', label: 'MFA Keys & Institutional Clearance', icon: KeyRound }
+              ,{ id: 'admin-content-review', label: 'Content Review', icon: FileText }
             ]
           },
           {
@@ -245,7 +246,13 @@ export const AdminSidebar: React.FC = () => {
     }
   };
 
-  const navSections = getRoleSections(currentRole);
+  const navSections = [
+    ...getRoleSections(currentRole),
+    {
+      title: 'Content Governance',
+      items: [{ id: 'admin-content-review' as PageId, label: 'Content Review', icon: FileText }, { id: 'admin-operations' as PageId, label: 'Academic Operations', icon: Building2 }]
+    } as AdminNavSection
+  ];
 
   return (
     <aside

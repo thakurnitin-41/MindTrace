@@ -64,7 +64,8 @@ import {
   saveAdminProfileToFirestore,
   getAdminProfileFromFirestore,
   saveAuditLogToFirestore,
-  testFirestoreConnection
+  testFirestoreConnection,
+  subscribeToStudentProfiles
 } from '../lib/firebase';
 
 interface AppContextType {
@@ -578,6 +579,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [admins, activeAdminId]);
 
   const isAdminAuthenticated = Boolean(activeAdmin);
+
+  useEffect(() => {
+    if (!activeAdmin) return;
+    return subscribeToStudentProfiles((remoteStudents) => {
+      setStudents((current) => {
+        const byId = new Map(current.map((student) => [student.id, student]));
+        remoteStudents.forEach((remote) => {
+          if (!remote.id) return;
+          const existing = byId.get(remote.id);
+          byId.set(remote.id, { ...(existing || remote), ...remote } as StudentProfile);
+        });
+        return Array.from(byId.values());
+      });
+    }, (error) => {
+      console.error('[Firebase] Student roster subscription failed:', error);
+    });
+  }, [activeAdmin]);
 
   // Admin Auth Modal
   const [isAdminAuthModalOpen, setIsAdminAuthModalOpen] = useState<boolean>(false);

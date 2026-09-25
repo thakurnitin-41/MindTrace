@@ -1,36 +1,11 @@
-import React from 'react';
-import { Bell, CheckCircle2, MessageSquare, UserRound } from 'lucide-react';
-import { useApp } from '../context/AppContext';
+import React, { useEffect, useState } from 'react';
+import { MessageSquare } from 'lucide-react';
+import { SharedMessageRecord, subscribeToMessages } from '../lib/firebase';
 
 export const MessagesView: React.FC = () => {
-  const { activeStudent } = useApp();
-  const messages = [
-    {
-      id: 'faculty-dsa',
-      sender: 'Dr. Sharma',
-      role: 'Faculty',
-      text: 'Your DSA assignment has been reviewed. Please revisit Question 4 and retry the recursion exercise.',
-      time: 'Today, 10:20 AM',
-      icon: UserRound
-    },
-    {
-      id: 'mindtrace-progress',
-      sender: 'MindTrace',
-      role: 'Learning intelligence',
-      text: `${activeStudent?.primaryRootGap || 'Your recursion'} is the best next focus area. Your next practice block is ready.`,
-      time: 'Yesterday, 6:40 PM',
-      icon: Bell
-    },
-    {
-      id: 'faculty-welcome',
-      sender: 'Course Faculty',
-      role: 'Class announcement',
-      text: 'The Binary Search Trees module is now available. Complete the guided practice before the chapter check.',
-      time: '2 days ago',
-      icon: MessageSquare
-    }
-  ];
-
+  const [sharedMessages, setSharedMessages] = useState<SharedMessageRecord[]>([]);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  useEffect(() => subscribeToMessages(setSharedMessages, (error) => setSyncError(error.message)), []);
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-6">
       <header>
@@ -38,23 +13,12 @@ export const MessagesView: React.FC = () => {
         <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">Messages</h1>
         <p className="text-sm text-slate-500 mt-1">Faculty guidance and MindTrace learning updates in one place.</p>
       </header>
+      {syncError && <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">Shared messages are temporarily unavailable. Please retry when your connection is restored.</div>}
       <div className="space-y-3">
-        {messages.map((message) => {
-          const Icon = message.icon;
-          return (
-            <article key={message.id} className="bg-white border border-slate-200 rounded-2xl p-5 flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0"><Icon className="w-5 h-5" /></div>
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <div><h2 className="font-bold text-slate-900">{message.sender}</h2><p className="text-xs text-slate-500">{message.role}</p></div>
-                  <span className="text-xs text-slate-400">{message.time}</span>
-                </div>
-                <p className="text-sm text-slate-600 leading-6 mt-3">{message.text}</p>
-                <div className="flex items-center gap-1.5 mt-3 text-xs text-emerald-700 font-semibold"><CheckCircle2 className="w-3.5 h-3.5" /> Actionable update</div>
-              </div>
-            </article>
-          );
-        })}
+        {sharedMessages.map((message) => (
+          <article key={message.id} className="bg-white border border-blue-200 rounded-2xl p-5"><p className="text-xs font-bold uppercase tracking-wider text-blue-600">Shared message</p><h2 className="font-bold text-slate-900 mt-1">{message.subject}</h2><p className="text-sm text-slate-600 leading-6 mt-2">{message.body}</p><p className="text-xs text-slate-400 mt-3">{message.senderName}</p></article>
+        ))}
+        {!syncError && sharedMessages.length === 0 && <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center"><MessageSquare className="w-8 h-8 text-slate-300 mx-auto" /><p className="text-sm font-semibold text-slate-700 mt-3">No shared messages yet</p><p className="text-xs text-slate-500 mt-1">Faculty and MindTrace updates will appear here.</p></div>}
       </div>
     </div>
   );

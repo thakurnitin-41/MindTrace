@@ -16,7 +16,12 @@ import {
   deleteDoc,
   getDocFromServer,
   collection,
-  onSnapshot
+  onSnapshot,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  Unsubscribe
 } from 'firebase/firestore';
 import firebaseConfigJson from '../../firebase-applet-config.json';
 import { StudentProfile } from '../types';
@@ -317,4 +322,100 @@ export async function saveAuditLogToFirestore(logEntry: {
   } catch (error) {
     console.error('[Firestore] Error recording audit log:', error);
   }
+}
+
+export interface ContentReportRecord {
+    id?: string;
+    contentId: string;
+    contentTitle: string;
+    issueType: string;
+    details: string;
+    reporterId?: string;
+    reporterName?: string;
+    institution?: string;
+    status: 'pending' | 'accepted' | 'rejected' | 'resolved';
+    createdAt: string;
+    reviewedAt?: string;
+    reviewedBy?: string;
+    resolutionNote?: string;
+  }
+
+export interface SharedMessageRecord {
+    id?: string;
+    senderId: string;
+    senderName: string;
+    recipientId?: string;
+    courseId?: string;
+    subject: string;
+    body: string;
+    type: 'faculty_student' | 'faculty_class' | 'mindtrace_student';
+    createdAt: string;
+    readBy?: string[];
+  }
+
+export async function createContentReport(report: ContentReportRecord): Promise<string> {
+    const reportRef = await addDoc(collection(db, 'content_reports'), {
+      ...report,
+      createdAt: report.createdAt || new Date().toISOString()
+    });
+    return reportRef.id;
+  }
+
+export async function updateContentReport(
+    reportId: string,
+    update: Pick<ContentReportRecord, 'status' | 'reviewedAt' | 'reviewedBy' | 'resolutionNote'>
+  ): Promise<void> {
+    await setDoc(doc(db, 'content_reports', reportId), update, { merge: true });
+  }
+
+export function subscribeToContentReports(
+    onChange: (reports: ContentReportRecord[]) => void,
+    onError: (error: Error) => void
+  ): Unsubscribe {
+    const reportsQuery = query(collection(db, 'content_reports'), orderBy('createdAt', 'desc'), limit(200));
+    return onSnapshot(
+      reportsQuery,
+      (snapshot) => onChange(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as ContentReportRecord) }))),
+      (error) => onError(error)
+    );
+  }
+
+export async function createSharedMessage(message: SharedMessageRecord): Promise<string> {
+    const messageRef = await addDoc(collection(db, 'messages'), {
+      ...message,
+      createdAt: message.createdAt || new Date().toISOString()
+    });
+    return messageRef.id;
+  }
+
+export function subscribeToMessages(
+    onChange: (messages: SharedMessageRecord[]) => void,
+    onError: (error: Error) => void
+  ): Unsubscribe {
+    const messagesQuery = query(collection(db, 'messages'), orderBy('createdAt', 'desc'), limit(200));
+    return onSnapshot(
+      messagesQuery,
+      (snapshot) => onChange(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as SharedMessageRecord) }))),
+      (error) => onError(error)
+    );
+  }
+
+export function subscribeToStudentProfiles(
+    onChange: (students: Partial<StudentProfile>[]) => void,
+    onError: (error: Error) => void
+  ): Unsubscribe {
+    return onSnapshot(
+      collection(db, 'users'),
+      (snapshot) => onChange(snapshot.docs.map((item) => item.data() as Partial<StudentProfile>)),
+      (error) => onError(error)
+    );
+}
+
+export async function createAcademicRecord(record: { type: 'institution' | 'department' | 'program' | 'course' | 'enrollment' | 'role'; name: string; institution?: string; ownerId?: string; metadata?: Record<string, string> }): Promise<string> {
+  const recordRef = await addDoc(collection(db, 'academic_records'), { ...record, createdAt: new Date().toISOString() });
+  return recordRef.id;
+}
+
+export function subscribeToAcademicRecords(onChange: (records: Array<{ id: string; type: string; name: string; institution?: string; ownerId?: string; metadata?: Record<string, string> }>) => void, onError: (error: Error) => void): Unsubscribe {
+  return onSnapshot(collection(db, 'academic_records'), (snapshot) => onChange(snapshot.docs.map((item) => ({ id: item.id, ...(item.data() as Omit<{ id: string; type: string; name: string }, 'id'>) }))), onError);
 }

@@ -23,7 +23,9 @@ export type PageId =
   | 'admin-analytics'
   | 'admin-audit'
   | 'admin-settings'
-  | 'admin-role-view';
+  | 'admin-role-view'
+  | 'admin-content-review'
+  | 'admin-operations';
 
 export type UserRole = 'student' | 'admin';
 

@@ -9,6 +9,8 @@ import { AdminAuditView } from './AdminAuditView';
 import { AdminSettingsView } from './AdminSettingsView';
 import { AccessDeniedGuard } from './AccessDeniedGuard';
 import { AdminAuthModal } from './AdminAuthModal';
+import { AdminContentReviewView } from './AdminContentReviewView';
+import { AdminOperationsView } from './AdminOperationsView';
 
 export const AdminPortal: React.FC = () => {
   const {
@@ -90,6 +92,10 @@ export const AdminPortal: React.FC = () => {
         return <AdminAuditView />;
       case 'admin-settings':
         return <AdminSettingsView />;
+      case 'admin-content-review':
+        return <AdminContentReviewView />;
+      case 'admin-operations':
+        return <AdminOperationsView />;
       case 'admin-dashboard':
       default:
         return <AdminDashboard />;
