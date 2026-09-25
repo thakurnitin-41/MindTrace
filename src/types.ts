@@ -1,6 +1,7 @@
 export type PageId =
   | 'landing'
   | 'dashboard'
+  | 'my-learning'
   | 'assessment'
   | 'autopsy'
   | 'knowledge-graph'
@@ -181,6 +182,20 @@ export interface StudentProfile {
   riskLevel?: 'low' | 'moderate' | 'critical';
   // Study Buddy & Cohort Collaboration
   learningFocus?: LearningFocus;
+  academicProfile?: {
+    currentYear?: string;
+    branch?: string;
+    graduationYear?: string;
+  };
+  learningGoals?: string[];
+  primaryGoal?: string;
+  learningInterests?: string[];
+  confidenceLevels?: Record<string, 'beginner' | 'comfortable' | 'advanced' | 'not_sure'>;
+  onboardingCompleted?: boolean;
+  diagnosticStatus?: 'not_started' | 'skipped' | 'completed';
+  currentCourse?: string;
+  currentChapter?: string;
+  courseProgress?: number;
   // Achievement System
   achievements?: AchievementBadge[];
 }

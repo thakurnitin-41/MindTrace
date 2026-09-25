@@ -46,127 +46,36 @@ export const Sidebar: React.FC = () => {
 
   const unlockedAchievementsCount = achievements.filter((a) => a.isUnlocked).length;
   const isProfessional = activeStudent?.roleType === 'professional';
-
-  // Role & Requirement-differentiated navigation sections:
-  const navSections: NavSection[] = isProfessional
-    ? [
-        {
-          title: 'Executive Fast-Track (SDE)',
-          items: [
-            { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-            {
-              id: 'twin',
-              label: 'Learning Twin',
-              icon: Fingerprint,
-              badge: 'Mistake DNA',
-              badgeColor: 'bg-indigo-100 text-indigo-700 border-indigo-200'
-            },
-            {
-              id: 'practice',
-              label: 'Adaptive Practice',
-              icon: Zap,
-              badge: 'Invariants',
-              badgeColor: 'bg-blue-100 text-blue-700 border-blue-200'
-            },
-            { id: 'knowledge-graph', label: 'Knowledge Graph', icon: GitFork }
-          ]
-        },
-        {
-          title: 'Root Cause & Acceleration',
-          items: [
-            {
-              id: 'autopsy',
-              label: 'Learning Autopsy',
-              icon: Activity,
-              badge: 'Root Gap',
-              badgeColor: 'bg-purple-100 text-purple-700 border-purple-200'
-            },
-            { id: 'tutor', label: 'AI Tutor', icon: Bot },
-            {
-              id: 'rescue',
-              label: 'Rescue Mode',
-              icon: Flame,
-              badge: 'Sprint',
-              badgeColor: 'bg-amber-100 text-amber-800 border-amber-200'
-            },
-            { id: 'assessment', label: 'Diagnostic Assessment', icon: ClipboardCheck }
-          ]
-        },
-        {
-          title: 'Collaboration & Milestones',
-          items: [
-            {
-              id: 'study-buddy',
-              label: 'Study Buddy',
-              icon: Users,
-              badge: 'Network',
-              badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200'
-            },
-            {
-              id: 'achievements',
-              label: 'Achievements',
-              icon: Award,
-              badge: `${unlockedAchievementsCount} Won`,
-              badgeColor: 'bg-amber-100 text-amber-800 border-amber-300'
-            },
-            { id: 'progress', label: 'Progress & Insights', icon: LineChart },
-            { id: 'settings', label: 'Me (Profile & Security)', icon: User }
-          ]
-        }
+  const navSections: NavSection[] = [
+    {
+      title: 'Learning',
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+        { id: 'my-learning', label: 'My Learning', icon: BookOpen },
+        { id: 'assessment', label: 'Assessments', icon: ClipboardCheck },
+        { id: 'practice', label: 'Practice', icon: Zap },
       ]
-    : [
-        {
-          title: 'Campus Placements Track',
-          items: [
-            { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-            { id: 'assessment', label: 'Diagnostic Assessment', icon: ClipboardCheck },
-            {
-              id: 'autopsy',
-              label: 'Learning Autopsy',
-              icon: Activity,
-              badge: 'Root Gap',
-              badgeColor: 'bg-purple-100 text-purple-700 border-purple-200'
-            },
-            {
-              id: 'rescue',
-              label: 'Rescue Mode',
-              icon: Flame,
-              badge: 'High Impact',
-              badgeColor: 'bg-amber-100 text-amber-800 border-amber-200'
-            }
-          ]
-        },
-        {
-          title: 'Adaptive Learning Sandbox',
-          items: [
-            { id: 'knowledge-graph', label: 'Knowledge Graph', icon: GitFork },
-            { id: 'tutor', label: 'AI Tutor', icon: Bot },
-            { id: 'practice', label: 'Adaptive Practice', icon: Zap },
-            { id: 'twin', label: 'Learning Twin', icon: Fingerprint }
-          ]
-        },
-        {
-          title: 'Peer Learning & Badges',
-          items: [
-            {
-              id: 'study-buddy',
-              label: 'Study Buddy',
-              icon: Users,
-              badge: 'Pairing',
-              badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200'
-            },
-            {
-              id: 'achievements',
-              label: 'Achievements',
-              icon: Award,
-              badge: `${unlockedAchievementsCount} Badges`,
-              badgeColor: 'bg-amber-100 text-amber-800 border-amber-300'
-            },
-            { id: 'progress', label: 'Progress & Insights', icon: LineChart },
-            { id: 'settings', label: 'Me (Profile & Security)', icon: User }
-          ]
-        }
-      ];
+    },
+    {
+      title: 'MindTrace AI',
+      items: [
+        { id: 'knowledge-graph', label: 'Knowledge Map', icon: GitFork },
+        { id: 'tutor', label: 'AI Tutor', icon: Bot },
+        { id: 'twin', label: 'Learning Insights', icon: Fingerprint },
+        { id: 'autopsy', label: 'Assessment Results', icon: Activity, badge: 'AI Analysis', badgeColor: 'bg-purple-100 text-purple-700 border-purple-200' },
+        { id: 'rescue', label: 'Rescue Mode', icon: Flame, badge: 'Intervention', badgeColor: 'bg-amber-100 text-amber-800 border-amber-200' }
+      ]
+    },
+    {
+      title: 'Community',
+      items: [
+        { id: 'study-buddy', label: 'Study Buddy', icon: Users },
+        { id: 'achievements', label: 'Achievements', icon: Award, badge: `${unlockedAchievementsCount} Won`, badgeColor: 'bg-amber-100 text-amber-800 border-amber-300' },
+        { id: 'progress', label: 'Progress', icon: LineChart },
+        { id: 'settings', label: 'Profile & Security', icon: User }
+      ]
+    }
+  ];
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col h-screen shrink-0 border-r border-slate-800 select-none">
@@ -201,10 +110,10 @@ export const Sidebar: React.FC = () => {
           )}
           <div className="min-w-0 flex-1">
             <div className="text-[11px] font-bold text-white truncate">
-              {isProfessional ? 'Industry SDE Track' : 'Campus Placements Track'}
+              {activeStudent?.primaryGoal || (isProfessional ? 'Software Developer' : 'Campus Placements')}
             </div>
             <div className="text-[10px] text-slate-400 truncate">
-              Target: {activeStudent?.targetExam || 'Core Systems & DSA'}
+              Target: {activeStudent?.targetExam || 'Learning path in progress'}
             </div>
           </div>
         </div>

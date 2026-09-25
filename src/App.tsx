@@ -4,6 +4,7 @@ import { Sidebar } from './components/Sidebar';
 import { TopHeader } from './components/TopHeader';
 import { LandingPage } from './components/LandingPage';
 import { StudentDashboard } from './components/StudentDashboard';
+import { MyLearningView } from './components/MyLearningView';
 import { DiagnosticAssessment } from './components/DiagnosticAssessment';
 import { LearningAutopsy } from './components/LearningAutopsy';
 import { KnowledgeGraphView } from './components/KnowledgeGraphView';
@@ -89,6 +90,8 @@ const AppContent: React.FC = () => {
     switch (currentPage) {
       case 'dashboard':
         return <StudentDashboard />;
+      case 'my-learning':
+        return <MyLearningView />;
       case 'assessment':
         return <DiagnosticAssessment />;
       case 'autopsy':

@@ -334,6 +334,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [agreeTerms, setAgreeTerms] = useState(true);
   const [targetExam, setTargetExam] = useState('Campus Placements & GATE CS');
   const [learningGoal, setLearningGoal] = useState('Data Structures & Algorithms Mastery');
+  const [selectedGoals, setSelectedGoals] = useState<string[]>(['Prepare for placements']);
+  const [primaryGoal, setPrimaryGoal] = useState('Prepare for placements');
+  const [learningInterests, setLearningInterests] = useState<string[]>(['Data Structures & Algorithms']);
+  const [confidenceLevel, setConfidenceLevel] = useState<'beginner' | 'comfortable' | 'advanced' | 'not_sure'>('beginner');
+  const [diagnosticStatus, setDiagnosticStatus] = useState<'not_started' | 'skipped'>('not_started');
   const [avatar, setAvatar] = useState<string>(
     AI_PRESET_AVATARS[0].url
   );
@@ -730,6 +735,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       degree: degree.trim(),
       targetExam: targetExam.trim(),
       learningGoal: learningGoal.trim(),
+      learningGoals: selectedGoals,
+      primaryGoal,
+      learningInterests,
+      confidenceLevels: {
+        'Data Structures & Algorithms': confidenceLevel
+      },
+      academicProfile: {
+        currentYear: graduationYearOrExp,
+        branch: degree.trim(),
+        graduationYear: graduationYearOrExp
+      },
+      onboardingCompleted: true,
+      diagnosticStatus,
+      currentCourse: 'Data Structures & Algorithms',
+      currentChapter: 'Binary Search Trees',
+      courseProgress: 63,
       avatar
     });
 
@@ -1393,6 +1414,51 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </div>
 
               <form onSubmit={handleRegisterSubmit} className="space-y-4">
+              <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-4 space-y-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-blue-700">Learning onboarding</p>
+                  <h3 className="text-base font-bold text-slate-900 mt-1">Tell us what you are working toward</h3>
+                  <p className="text-xs text-slate-600 mt-1">These choices personalize your first learning plan and can be changed later.</p>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-2">Goals <span className="font-normal text-slate-500">(select all that apply)</span></label>
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    {['Prepare for placements', 'Strengthen fundamentals', 'Prepare for internships', 'Explore AI / ML'].map((goal) => (
+                      <label key={goal} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer">
+                        <input type="checkbox" checked={selectedGoals.includes(goal)} onChange={(event) => setSelectedGoals((current) => event.target.checked ? [...new Set([...current, goal])] : current.filter((item) => item !== goal))} className="accent-blue-600" />
+                        {goal}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <label className="text-xs font-semibold text-slate-700">Primary goal
+                    <select value={primaryGoal} onChange={(event) => setPrimaryGoal(event.target.value)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal">
+                      {selectedGoals.map((goal) => <option key={goal}>{goal}</option>)}
+                    </select>
+                  </label>
+                  <label className="text-xs font-semibold text-slate-700">Current confidence
+                    <select value={confidenceLevel} onChange={(event) => setConfidenceLevel(event.target.value as typeof confidenceLevel)} className="mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-normal">
+                      <option value="beginner">Beginner</option><option value="comfortable">Comfortable</option><option value="advanced">Advanced</option><option value="not_sure">Not sure</option>
+                    </select>
+                  </label>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-2">Preferred learning areas <span className="font-normal text-slate-500">(up to 5)</span></label>
+                  <div className="flex flex-wrap gap-2">
+                    {['Programming Fundamentals', 'Data Structures & Algorithms', 'Database Management Systems', 'Web Development', 'Artificial Intelligence', 'Machine Learning'].map((interest) => (
+                      <button key={interest} type="button" onClick={() => setLearningInterests((current) => current.includes(interest) ? current.filter((item) => item !== interest) : current.length < 5 ? [...current, interest] : current)} className={`px-2.5 py-1.5 rounded-lg border text-[11px] font-semibold transition-colors ${learningInterests.includes(interest) ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-slate-600 border-slate-300 hover:border-blue-300'}`}>{interest}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex items-center justify-between gap-3 pt-1">
+                  <span className="text-xs font-semibold text-slate-700">Start with a diagnostic?</span>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setDiagnosticStatus('not_started')} className={`px-2.5 py-1 rounded-md text-[11px] font-semibold ${diagnosticStatus === 'not_started' ? 'bg-blue-100 text-blue-800' : 'text-slate-500'}`}>Take later</button>
+                    <button type="button" onClick={() => setDiagnosticStatus('skipped')} className={`px-2.5 py-1 rounded-md text-[11px] font-semibold ${diagnosticStatus === 'skipped' ? 'bg-slate-200 text-slate-800' : 'text-slate-500'}`}>Skip for now</button>
+                  </div>
+                </div>
+              </section>
               {/* Profile Picture Upload, Camera Capture & AI Avatar Presets */}
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
                 <div className="flex items-center justify-between">
