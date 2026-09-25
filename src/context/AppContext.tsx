@@ -122,7 +122,7 @@ interface AppContextType {
   auditLogs: AuditLogEntry[];
   addAuditLog: (entry: Omit<AuditLogEntry, 'id' | 'timestamp'>) => void;
 
-  // Live Voice Modal Controls (gemini-3.8-live)
+  // Live Voice Modal Controls (Gemini Live)
   isLiveVoiceModalOpen: boolean;
   setIsLiveVoiceModalOpen: (open: boolean) => void;
   openLiveVoiceModal: () => void;

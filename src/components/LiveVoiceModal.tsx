@@ -143,6 +143,9 @@ export const LiveVoiceModal: React.FC<LiveVoiceModalProps> = ({
       scriptProcessorRef.current = processor;
 
       // 4. Connect WebSocket to backend bridge
+      if (window.location.hostname.endsWith('github.io')) {
+        throw new Error('Live Voice needs the MindTrace backend. Open the local server or deploy server.ts, then configure GEMINI_API_KEY.');
+      }
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const wsUrl = `${protocol}//${window.location.host}/api/live-ws`;
       const ws = new WebSocket(wsUrl);
@@ -158,7 +161,7 @@ export const LiveVoiceModal: React.FC<LiveVoiceModalProps> = ({
           {
             id: `sys-${Date.now()}`,
             sender: 'gemini',
-            text: `Connected to Gemini Live (gemini-3.8-live). Hi ${studentName}, start speaking anytime! Ask about DSA algorithms, tree traversals, or root cause concepts.`,
+            text: `Connected to Gemini Live. Hi ${studentName}, start speaking anytime! Ask about learning gaps, course concepts, or practice questions.`,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           },
         ]);
@@ -305,7 +308,7 @@ export const LiveVoiceModal: React.FC<LiveVoiceModalProps> = ({
                 <h3 className="text-base font-bold tracking-tight">MindTrace Live Voice Tutor</h3>
                 <span className="bg-blue-500/30 text-blue-100 text-[10px] font-mono px-2 py-0.5 rounded-full border border-blue-400/30 flex items-center gap-1">
                   <Sparkles className="w-2.5 h-2.5 text-amber-300" />
-                  gemini-3.8-live
+                  Gemini Live
                 </span>
               </div>
               <p className="text-xs text-blue-200 mt-0.5 flex items-center gap-1.5">

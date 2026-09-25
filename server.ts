@@ -28,7 +28,8 @@ async function startServer() {
     res.json({
       status: "ok",
       timestamp: new Date().toISOString(),
-      liveModel: "gemini-3.8-live"
+      liveModel: process.env.GEMINI_LIVE_MODEL || "gemini-2.5-flash-native-audio-preview-12-2025",
+      voiceConfigured: Boolean(process.env.GEMINI_API_KEY)
     });
   });
 
@@ -53,7 +54,7 @@ async function startServer() {
       const ai = getAIClient();
 
       session = await ai.live.connect({
-        model: "gemini-3.8-live",
+        model: process.env.GEMINI_LIVE_MODEL || "gemini-2.5-flash-native-audio-preview-12-2025",
         config: {
           responseModalities: [Modality.AUDIO],
           speechConfig: {
@@ -117,7 +118,7 @@ async function startServer() {
           JSON.stringify({
             type: "status",
             status: "ready",
-            model: "gemini-3.8-live"
+            model: process.env.GEMINI_LIVE_MODEL || "gemini-2.5-flash-native-audio-preview-12-2025"
           })
         );
       }
@@ -129,7 +130,7 @@ async function startServer() {
             type: "error",
             error:
               err?.message ||
-              "Could not initialize gemini-3.8-live session. Please verify your GEMINI_API_KEY."
+              "Could not initialize Gemini Live. Verify GEMINI_API_KEY and GEMINI_LIVE_MODEL."
           })
         );
       }
@@ -177,7 +178,7 @@ async function startServer() {
       const ai = getAIClient();
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.8-flash",
+        model: process.env.GEMINI_TEXT_MODEL || "gemini-2.5-flash",
         contents: [
           ...(Array.isArray(history) ? history : []),
           { role: "user", parts: [{ text: message }] }
