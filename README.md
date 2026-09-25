@@ -18,6 +18,12 @@ MindTrace is an AI-powered Learning Intelligence System that finds the gap behin
 4. Open `http://localhost:3000`.
 
 The `file://` URL is not supported because the app uses Vite modules and server-backed API/WebSocket routes.
+If port 3000 is already in use, start MindTrace on another port:
+
+```powershell
+$env:PORT = "3002"
+npm run dev
+```
 
 ## Validation
 

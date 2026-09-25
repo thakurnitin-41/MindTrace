@@ -14,7 +14,11 @@ const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const configuredPort = Number(process.env.PORT || 3000);
+  if (!Number.isInteger(configuredPort) || configuredPort < 1 || configuredPort > 65535) {
+    throw new Error("PORT must be an integer between 1 and 65535.");
+  }
+  const PORT = configuredPort;
   const server = http.createServer(app);
 
   app.use(express.json());
