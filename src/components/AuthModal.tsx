@@ -30,7 +30,8 @@ import {
   Globe,
   Search,
   School,
-  MapPin
+  MapPin,
+  ArrowLeft
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { AdminRole } from '../types';
@@ -808,11 +809,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           }`}
         >
           <button
+            type="button"
             onClick={() => {
               stopCamera();
               onClose();
             }}
-            className="absolute top-5 right-5 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            className="absolute top-5 left-5 z-10 inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors cursor-pointer"
+            aria-label="Back to MindTrace home"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back</span>
+          </button>
+          <button
+            onClick={() => {
+              stopCamera();
+              onClose();
+            }}
+            className="absolute top-5 right-5 z-10 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
