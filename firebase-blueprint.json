@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "userProfile": {
+      "title": "UserProfile",
+      "description": "Student user profile information and learning state",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "name": { "type": "string", "description": "Full name of student" },
+        "email": { "type": "string", "format": "email", "description": "Student email address" },
+        "phone": { "type": "string", "description": "Mobile phone with country code" },
+        "institution": { "type": "string", "description": "College, University, or Company" },
+        "degree": { "type": "string", "description": "Degree or branch of study" },
+        "targetExam": { "type": "string", "description": "Target exam or interview focus" },
+        "learningGoal": { "type": "string", "description": "Primary learning goal" },
+        "avatar": { "type": "string", "description": "Avatar image URL or data URI" },
+        "streak": { "type": "number", "description": "Consecutive dynamic study streak in days" },
+        "activeDays": { "type": "array", "description": "History of active streak days" },
+        "registeredAt": { "type": "string", "description": "Registration ISO timestamp" },
+        "lastActiveDate": { "type": "string", "description": "Date string of last activity" },
+        "lastCheckInDate": { "type": "string", "description": "Date string of last streak check-in" },
+        "completedAssessment": { "type": "boolean", "description": "Whether diagnostic test was finished" }
+      },
+      "required": ["uid", "email"]
+    },
+    "assessmentResult": {
+      "title": "AssessmentResult",
+      "description": "Student diagnostic assessment submission and cognitive gap autopsy",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Assessment ID" },
+        "userId": { "type": "string", "description": "UID of the student" },
+        "score": { "type": "number", "description": "Number of correct answers" },
+        "totalQuestions": { "type": "number", "description": "Total question count" },
+        "percentage": { "type": "number", "description": "Percentage score" },
+        "primaryMisconception": { "type": "string", "description": "Diagnosed root gap misconception" },
+        "prerequisiteChain": { "type": "string", "description": "Identified prerequisite chain breakdown" },
+        "createdAt": { "type": "string", "description": "ISO timestamp of completion" }
+      },
+      "required": ["id", "userId", "score"]
+    },
+    "adminProfile": {
+      "title": "AdminProfile",
+      "description": "Faculty and institutional administrator profile with verified credentials and role authorization",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Admin UID" },
+        "name": { "type": "string", "description": "Full name of administrator" },
+        "email": { "type": "string", "format": "email", "description": "Institutional faculty email" },
+        "institution": { "type": "string", "description": "University or institution name" },
+        "department": { "type": "string", "description": "Academic department" },
+        "role": { "type": "string", "description": "Admin role title" },
+        "authKey": { "type": "string", "description": "Institutional authorization key" },
+        "isVerified": { "type": "boolean", "description": "Whether institutional status is verified" },
+        "createdAt": { "type": "string", "description": "Registration ISO timestamp" }
+      },
+      "required": ["uid", "email", "institution", "role"]
+    },
+    "auditLog": {
+      "title": "AuditLog",
+      "description": "Enterprise audit log tracking administrative actions and consent-gated data access",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Log ID" },
+        "timestamp": { "type": "string", "description": "ISO timestamp" },
+        "actorName": { "type": "string", "description": "Actor display name" },
+        "actorRole": { "type": "string", "description": "Actor role (admin/student/system)" },
+        "action": { "type": "string", "description": "Action performed" },
+        "target": { "type": "string", "description": "Target entity" },
+        "details": { "type": "string", "description": "Event details" }
+      },
+      "required": ["id", "timestamp", "actorName", "action"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "userProfile",
+      "description": "Stores user profile and learning metadata accessible by owner or verified admin as per consent"
+    },
+    "/users/{userId}/assessments/{assessmentId}": {
+      "schema": "assessmentResult",
+      "description": "Diagnostic assessment attempts belonging to the student"
+    },
+    "/admins/{adminId}": {
+      "schema": "adminProfile",
+      "description": "Institutional administrator profile documents accessible only by the verified administrator"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "auditLog",
+      "description": "Audit trail entries accessible to verified portal administrators"
+    }
+  }
+}

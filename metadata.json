@@ -1,0 +1,6 @@
+{
+  "name": "MindTrace",
+  "description": "AI-powered Learning Intelligence System that finds the gap behind the gap to build the shortest path to mastery.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
